@@ -48,17 +48,14 @@ const Dashboard: React.FC = () => {
   async function handleUpdateFood(
     food: Omit<IFoodPlate, 'id' | 'available'>,
   ): Promise<void> {
-    const updatedFood: IFoodPlate = {
-      ...food,
-      id: editingFood.id,
-      available: editingFood.available,
-    };
-    console.log(updatedFood);
-    await api.put(`foods/${editingFood.id}`, updatedFood);
-    const updatedFoods = foods.filter(
-      toUpdateFood => toUpdateFood.id !== editingFood.id,
+    const response = await api.put(`foods/${editingFood.id}`, food);
+    const foodIndex = foods.findIndex(
+      findFood => findFood.id === editingFood.id,
     );
-    setFoods([...updatedFoods, updatedFood]);
+
+    foods[foodIndex] = response.data;
+
+    setFoods([...foods]);
   }
 
   async function handleDeleteFood(id: number): Promise<void> {
